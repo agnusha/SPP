@@ -14,6 +14,8 @@ public class App {
         System.out.println("Agnia");
 
         // task 2
+        Float result = (float) 1 / 2 + (float) 1 / 4;
+        System.out.println("Result:" + result);
 
     }
 }

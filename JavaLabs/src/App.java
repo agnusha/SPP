@@ -1,29 +1,31 @@
 public class App {
     public static void main(String[] args) throws Exception {
-        System.out.println("Insert max element count");
-        var n = Integer.parseInt(System.console().readLine());
-
-        int[] list = new int[n];
-        for (int i = 0; i < n; i++)
-            list[i] = i;
-
         while (true) {
-            System.out.println("Insert first element of pair");
-            var p = Integer.parseInt(System.console().readLine());
+            System.out.println("Insert entity to work with");
+            System.out.println("1. Академическая группа");
+            System.out.println("2. Специальность");
+            System.out.println("3. Дисциплина");
+            System.out.println("4. Аудитория");
+            System.out.println("5. Преподаватель");
 
-            System.out.println("Insert second element of pair");
-            var q = Integer.parseInt(System.console().readLine());
-
-            if (list[p] == list[q]) {
-                System.out.println("Don't added a pair: " + p + "-" + q);
-                continue;
-            }
-
-            for (int i = 0; i < n; i++)
-                if (list[i] == list[p])
-                    list[i] = list[q];
-
-            System.out.println("Added a pair: " + p + "-" + q);
+            var option = Integer.parseInt(System.console().readLine());
         }
+    }
+}
+
+abstract class BaseCodeWithNumber {
+    String code; // код
+    int number; // номер
+}
+
+class Group extends BaseCodeWithNumber {
+    void displayInfo() {
+        System.out.printf("Group code: %s \tNumber: %d\n", code, number);
+    }
+}
+
+class Speciality extends BaseCodeWithNumber {
+    void displayInfo() {
+        System.out.printf("Speciality code: %s \tNumber: %d\n", code, number);
     }
 }

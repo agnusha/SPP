@@ -196,7 +196,6 @@ class Information implements IPrintable {
 
     public ArrayList<? extends BaseId> getArrayByOption(int option) throws Exception {
         switch (option) {
-            // remove
             case 1:
                 return groups;
             case 2:
@@ -253,24 +252,17 @@ class Information implements IPrintable {
     }
 
     public void displayInfo() {
-        System.out.println("Groups:");
-        groups.forEach(x -> x.displayInfo());
-        System.out.println();
+        print("Groups", groups);
+        print("Specialities", specialities);
+        print("Disciplines", disciplines);
+        print("Audiences", audiences);
+        print("Teachers", teachers);
+    }
 
-        System.out.println("Specialities:");
-        specialities.forEach(x -> x.displayInfo());
-        System.out.println();
-
-        System.out.println("Disciplines:");
-        disciplines.forEach(x -> x.displayInfo());
-        System.out.println();
-
-        System.out.println("Audiences:");
-        audiences.forEach(x -> x.displayInfo());
-        System.out.println();
-
-        System.out.println("Teachers:");
-        teachers.forEach(x -> x.displayInfo());
+    private static void print(String text, ArrayList<? extends IPrintable> list) {
+        System.out.println(text);
+        list.forEach(x -> x.displayInfo());
+        System.out.println("------------------");
         System.out.println();
     }
 }

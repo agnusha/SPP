@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,6 @@ public class App {
 
             var option = Integer.parseInt(System.console().readLine());
             switch (option) {
-                // remove
                 case 1:
                     System.out.println("Set entity to work with");
                     System.out.println("1. Академическая группа");
@@ -49,7 +49,15 @@ public class App {
                     var audience2 = new Audience(2, 110);
                     var audience3 = new Audience(3, 130);
                     information.setAudiences(new ArrayList<>(List.of(audience1, audience2, audience3)));
+
+                    SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+                    var teacher1 = new Teacher(1, "Иван", "Иванов", "Иванович", "+375-29-319-44-99",
+                            ft.parse("2000-01-01"), new ArrayList<>(List.of(discipline1, discipline2)));
+                    var teacher2 = new Teacher(1, "Агния", "Старовойтова", "Кирилловна", "+375-29-333-00-96",
+                            ft.parse("1990-01-01"), new ArrayList<>(List.of(discipline3)));
+                    information.setTeachers(new ArrayList<>(List.of(teacher1, teacher2)));
                     break;
+
                 case 3:
                     information.displayInfo();
                     break;
@@ -163,9 +171,11 @@ class Teacher extends BaseId implements IPrintable {
     ArrayList<Discipline> disciplines;
 
     public void displayInfo() {
-        System.out.printf("Teacher Name: %s \tSurname: %s \tFatherName: %s \tTelephone %s \tDateOfBirth: %F\n", name,
+        System.out.printf("Teacher Name: %s \tSurname: %s \tFatherName: %s \tTelephone %s \tDateOfBirth: %tc\n", name,
                 surname, fatherName, telephone, dateOfBirth);
-        System.out.println("Disciplines:" + disciplines);
+
+        System.out.println("Disciplines for teacher:");
+        disciplines.forEach(x -> x.displayInfo());
     }
 }
 

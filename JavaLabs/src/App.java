@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -8,22 +9,53 @@ public class App {
             System.out.println("Insert action to do");
             System.out.println("1. Remove");
             System.out.println("2. Create");
-            System.out.println("3. Edit");
-            System.out.println("4. ShowAll");
+            System.out.println("3. ShowAll");
+            System.out.println("4. Exit");
 
             var option = Integer.parseInt(System.console().readLine());
-            if (option == 4) {
-                information.displayInfo();
-                continue;
-            }
+            switch (option) {
+                // remove
+                case 1:
+                    System.out.println("Set entity to work with");
+                    System.out.println("1. Академическая группа");
+                    System.out.println("2. Специальность");
+                    System.out.println("3. Дисциплина");
+                    System.out.println("4. Аудитория");
+                    System.out.println("5. Преподаватель");
+                    var entity = Integer.parseInt(System.console().readLine());
 
-            var entity = Integer.parseInt(System.console().readLine());
-            System.out.println("Set entity to work with");
-            System.out.println("1. Академическая группа");
-            System.out.println("2. Специальность");
-            System.out.println("3. Дисциплина");
-            System.out.println("4. Аудитория");
-            System.out.println("5. Преподаватель");
+                    System.out.println("Set id");
+                    var id = Integer.parseInt(System.console().readLine());
+
+                    information.getArrayByOption(entity).removeIf(obj -> obj.id == id);
+                    break;
+                case 2:
+                    var group1 = new Group(1, 145666, "14-aa-group");
+                    var group2 = new Group(2, 145656, "14-bb-group");
+                    var group3 = new Group(3, 135666, "15-aa-group");
+                    information.setGroups(new ArrayList<>(List.of(group1, group2, group3)));
+
+                    var speciality1 = new Speciality(1, 116677, "ПОИТ");
+                    var speciality2 = new Speciality(2, 115577, "ИПОИТ");
+                    var speciality3 = new Speciality(3, 115578, "ФМО");
+                    information.setSpecialities(new ArrayList<>(List.of(speciality1, speciality2, speciality3)));
+
+                    var discipline1 = new Discipline(1, "Математическая статистика", 133);
+                    var discipline2 = new Discipline(2, "Инженерная графика", 50);
+                    var discipline3 = new Discipline(3, "История Беларуси", 150);
+                    information.setDisciplines(new ArrayList<>(List.of(discipline1, discipline2, discipline3)));
+
+                    var audience1 = new Audience(1, 125);
+                    var audience2 = new Audience(2, 110);
+                    var audience3 = new Audience(3, 130);
+                    information.setAudiences(new ArrayList<>(List.of(audience1, audience2, audience3)));
+                    break;
+                case 3:
+                    information.displayInfo();
+                    break;
+                case 4:
+                    return;
+            }
 
         }
     }
@@ -33,41 +65,96 @@ interface IPrintable {
     void displayInfo();
 }
 
-abstract class BaseNumber {
+abstract class BaseId {
+    public BaseId(int id) {
+        this.id = id;
+    }
+
+    int id;
+}
+
+abstract class BaseNumber extends BaseId {
+    public BaseNumber(int id, int number) {
+        super(id);
+        this.number = number;
+    }
+
     int number; // номер
+}
+
+abstract class BaseTitleWithId extends BaseId {
+    String title; // название
+
+    public BaseTitleWithId(int id, String title) {
+        super(id);
+        this.title = title;
+    }
 }
 
 abstract class BaseCodeWithNumber extends BaseNumber {
     String code; // код
+
+    public BaseCodeWithNumber(int id, int number, String code) {
+        super(id, number);
+        this.code = code;
+    }
 }
 
 class Group extends BaseCodeWithNumber implements IPrintable {
+    public Group(int id, int number, String code) {
+        super(id, number, code);
+    }
+
     public void displayInfo() {
         System.out.printf("Group code: %s \tNumber: %d\n", code, number);
     }
 }
 
 class Speciality extends BaseCodeWithNumber implements IPrintable {
+    public Speciality(int id, int number, String code) {
+        super(id, number, code);
+    }
+
     public void displayInfo() {
         System.out.printf("Speciality code: %s \tNumber: %d\n", code, number);
     }
 }
 
-class Discipline extends BaseCodeWithNumber implements IPrintable {
+class Discipline extends BaseTitleWithId implements IPrintable {
+    public Discipline(int id, String title, int hours) {
+        super(id, title);
+        this.hours = hours;
+    }
+
     int hours; // кол-во часов
 
     public void displayInfo() {
-        System.out.printf("Discipline code: %s \tNumber: %d \tHours: %d\n", code, number, hours);
+        System.out.printf("Discipline title: %s \tHours: %d\n", title, hours);
     }
 }
 
 class Audience extends BaseNumber implements IPrintable {
+    public Audience(int id, int number) {
+        super(id, number);
+    }
+
     public void displayInfo() {
         System.out.printf("Audience number: %d\n", number);
     }
 }
 
-class Teacher implements IPrintable {
+class Teacher extends BaseId implements IPrintable {
+    public Teacher(int id, String name, String surname, String fatherName, String telephone, Date dateOfBirth,
+            ArrayList<Discipline> disciplines) {
+        super(id);
+        this.name = name;
+        this.surname = surname;
+        this.fatherName = fatherName;
+        this.telephone = telephone;
+        this.dateOfBirth = dateOfBirth;
+        this.disciplines = disciplines;
+    }
+
     String name; // имя
     String surname; // фамилия
     String fatherName; // отчество
@@ -96,6 +183,64 @@ class Information implements IPrintable {
     ArrayList<Discipline> disciplines;
     ArrayList<Audience> audiences;
     ArrayList<Teacher> teachers;
+
+    public ArrayList<? extends BaseId> getArrayByOption(int option) throws Exception {
+        switch (option) {
+            // remove
+            case 1:
+                return groups;
+            case 2:
+                return specialities;
+            case 3:
+                return disciplines;
+            case 4:
+                return audiences;
+            case 5:
+                return teachers;
+            default:
+                throw new Exception("Option is incorrect");
+        }
+    }
+
+    public ArrayList<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(ArrayList<Group> groups) {
+        this.groups = groups;
+    }
+
+    public ArrayList<Speciality> getSpecialities() {
+        return specialities;
+    }
+
+    public void setSpecialities(ArrayList<Speciality> specialities) {
+        this.specialities = specialities;
+    }
+
+    public ArrayList<Discipline> getDisciplines() {
+        return disciplines;
+    }
+
+    public void setDisciplines(ArrayList<Discipline> disciplines) {
+        this.disciplines = disciplines;
+    }
+
+    public ArrayList<Audience> getAudiences() {
+        return audiences;
+    }
+
+    public void setAudiences(ArrayList<Audience> audiences) {
+        this.audiences = audiences;
+    }
+
+    public ArrayList<Teacher> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(ArrayList<Teacher> teachers) {
+        this.teachers = teachers;
+    }
 
     public void displayInfo() {
         System.out.println("Groups:");
